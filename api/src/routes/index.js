@@ -10,10 +10,8 @@ router.get('/videogames', async (req, res) => {
     let videogamesDb = await Videogame.findAll({
         include: Genre
     });
-    //Parseamos el objeto recibido de findAll porque es una referencia circular (?)
     videogamesDb = JSON.stringify(videogamesDb);
     videogamesDb = JSON.parse(videogamesDb);
-    //Aca dejamos el arreglo de generos plano con solo los nombres de cada genero
     videogamesDb = videogamesDb.reduce((acc, el) => acc.concat({
         ...el,
         genres: el.genres.map(g => g.name)
@@ -54,7 +52,6 @@ router.get('/videogames', async (req, res) => {
         }
     }
 })
-// GET /videogame/:idVideoGame
 router.get('/videogame/:idVideogame', async (req, res) => {
     const { idVideogame } = req.params
     if (idVideogame.includes('-')) {
@@ -88,7 +85,6 @@ router.get('/videogame/:idVideogame', async (req, res) => {
         return console.log(err)
     }
 })
-// GET a /genres
 router.get('/genres', async (req, res) => {
     const genresDb = await Genre.findAll();
     if (genresDb.length) return res.send(`Ya existen generos en la Base de Datos, longitud: ${genresDb.length}`)
@@ -104,7 +100,6 @@ router.get('/genres', async (req, res) => {
     })
     res.json(genres)
 })
-//POST a /videogame
 router.post('/videogame', async (req, res) => {
     let { name, description, releaseDate, rating, genres, platforms } = req.body;
     platforms = platforms.join(', ')
